@@ -14,11 +14,17 @@ from google.genai.errors import APIError
 load_dotenv()
 
 # ==========================================
+# Authentication Configuration
+# ==========================================
+AUTH_USERNAME = "Test"
+AUTH_PASSWORD = "Test@1234"
+
+# ==========================================
 # Page Configuration
 # ==========================================
 st.set_page_config(
-    page_title="Company-Specific ATS Auditor & Outreach Generator",
-    page_icon="🎯",
+    page_title="Virat Patel - ATS Auditor & Outreach Suite",
+    page_icon="🔒",
     layout="wide",
     initial_sidebar_state="auto"
 )
@@ -168,6 +174,37 @@ st.markdown("""
     }
 </style>
 """, unsafe_allow_html=True)
+
+# ==========================================
+# Authentication Gate
+# ==========================================
+if "authenticated" not in st.session_state:
+    st.session_state["authenticated"] = False
+
+if not st.session_state["authenticated"]:
+    st.markdown("""
+    <div style="max-width: 440px; margin: 3rem auto 1rem auto; padding: 2rem; background: white; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.08); text-align: center;">
+        <div style="font-size: 2.4rem; margin-bottom: 0.5rem;">🔒</div>
+        <h2 style="font-weight: 800; font-size: 1.35rem; color: #0f172a; margin: 0;">ATS Auditor Access</h2>
+        <p style="font-size: 0.85rem; color: #64748b; margin-top: 0.3rem;">Please sign in to access your personal screening suite.</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    col_l1, col_l2, col_l3 = st.columns([1, 1.4, 1])
+    with col_l2:
+        with st.form("login_form"):
+            user_in = st.text_input("Username", placeholder="e.g. Test")
+            pass_in = st.text_input("Password", type="password", placeholder="••••••••")
+            login_btn = st.form_submit_button("🚀 Sign In", use_container_width=True, type="primary")
+            
+            if login_btn:
+                if user_in.strip() == AUTH_USERNAME and pass_in.strip() == AUTH_PASSWORD:
+                    st.session_state["authenticated"] = True
+                    st.toast("🎉 Login successful!", icon="✅")
+                    st.rerun()
+                else:
+                    st.error("❌ Invalid Username or Password. Please try again.")
+    st.stop()
 
 # ==========================================
 # Default Master Sample Data (Virat Patel)
